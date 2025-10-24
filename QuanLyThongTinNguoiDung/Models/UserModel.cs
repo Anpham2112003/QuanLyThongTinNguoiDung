@@ -30,6 +30,7 @@ namespace QuanLyThongTinNguoiDung.Models
         public  string SoDienThoai { get; set; } =string .Empty;
 
         [Required(ErrorMessage = "Địa chỉ không được để trống")]
+        [StringLength(200, ErrorMessage = "Địa chỉ tối đa 200 ký tự")]
         public string DiaChi { get; set; } =string .Empty;
 
 

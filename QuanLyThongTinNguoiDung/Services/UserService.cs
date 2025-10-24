@@ -90,7 +90,7 @@ namespace QuanLyThongTinNguoiDung.Services
             updateUser.Email = user.Email;
             updateUser.SoDienThoai = user.SoDienThoai;
             updateUser.DiaChi = user.DiaChi;
-
+            updateUser.NgaySinh = user.NgaySinh;
 
             _userRepository.Update(updateUser);
 

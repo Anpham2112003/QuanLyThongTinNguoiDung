@@ -26,8 +26,7 @@ namespace QuanLyThongTinNguoiDung.Models
 
 
         [Required(ErrorMessage = "Số điện thoại không được để trống")]
-        [Phone(ErrorMessage = "Số điện thoại không hợp lệ")]
-        [RegularExpression(@"^(0|\+84)([0-9]{9})$", ErrorMessage = "Số điện thoại không hợp lệ!")]
+        [RegularExpression(@"^(0|\+84)([0-9]{9})$", ErrorMessage = "Số điện thoại không hợp lệ, phải là số điện thoại Việt Nam  bắt đầu bằng 0 hoặc + 84")]
         public  string SoDienThoai { get; set; } =string .Empty;
 
         [Required(ErrorMessage = "Địa chỉ không được để trống")]

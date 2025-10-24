@@ -1,0 +1,212 @@
+﻿@using QuanLyThongTinNguoiDung.Dtos
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model (int Total ,List< UserModelWithIndex> users)
+
+@{
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var totalPages = Model.Total <= 10 ? 1 : (int)Math.Ceiling(Model.Total / 10.0);
+
+    var currentPage = ViewBag.CurrentPage != null ? (int)ViewBag.CurrentPage : 1;
+
+}
+
+<div class="container ">
+    <h3 class="text-center mb-5">Quản lý thông tin người dùng</h3>
+    <div class=" mb-3  w-100">
+        <div class="w-100 d-flex  align-items-center justify-content-end">
+            <a asp-controller="User" asp-action="Create" class="btn btn-primary">Thêm người dùng</a>
+        </div>
+    </div>
+    <div class="d-flex  align-items-center justify-content-center ">
+        <table class="table table-hover w-100 h-100">
+            <thead>
+                <tr>
+                    <th class="text-center">#STT</th>
+                    <th class="text-center">Họ Tên</th>
+                    <th class="text-center">Email</th>
+                    <th class="text-center">Ngày tháng năm sinh</th>
+                    <th class="text-center">Số điện thoại</th>
+                    <th class="text-center">Địa chỉ</th>
+                    <th class="text-center">Hành động </th>
+                </tr>
+            </thead>
+
+            <tbody class="h-75">
+
+                @if (Model.Total == 0)
+                {
+                    <tr>
+                        <td class="text-center" colspan="7">Không có dữ liệu</td>
+                    </tr>
+                }
+                @foreach (var user in Model.users)
+                {
+
+                    <tr >
+                        <td class="text-center" style="vertical-align: middle;">@user.Index</td>
+                        <td class="text-center " style="vertical-align: middle;">@user.HoTen</td>
+                        <td class="text-center " style="vertical-align: middle;">@user.Email</td>
+                        <td class="text-center" style="vertical-align: middle;">@user.NgaySinh.ToString("dd/MM/yyyy")</td>
+                        <td class="text-center" style="vertical-align: middle;">@user.SoDienThoai</td>
+                        <td class="text-center" style="vertical-align: middle;">@user.DiaChi</td>
+                        <td class="text-center">
+                            <a asp-controller="User" asp-action="Edit" asp-route-id="@user.Id" class="btn btn-smbtn-primary">
+                                <i class="fa-solid fa-file-pen text-success" ></i>
+                            </a>
+
+                            <a class="btn btn-smbtn-danger btn-delete " data-bs-toggle="modal" data-bs-target="#deleteModal" data-bind="@user.Id">
+                                <i class="fa-solid fa-trash text-danger "></i>
+                            </a>
+                        </td>        
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    
+
+    <div class="d-flex flex-column align-items-center justify-content-center">
+
+        <ul class="pagination"></ul>
+    </div>
+
+
+</div>
+
+<!-- Modal Delete -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Bạn có chắc muốn xoá người dùng này không?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <span class="text-danger">Cảnh báo khi bấm xác nhận người dùng này sẽ bị xoá vĩnh viễn </span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary close" data-dismiss="modal" >Đóng</button>
+                <button type="button" class="btn btn-primary " id="btn-confirm">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts {
+    <script>
+             $(document).ready(function () {
+
+                var totalPages = @totalPages;
+
+                var paginationUl = $('.pagination');
+
+                for (var i = 1; i <= totalPages; i++) {
+                    var li = $('<li></li>').addClass('page-item');
+                    var a = $('<a></a>')
+                        .addClass('page-link')
+                        .attr('href', '#')
+                        .text(i)
+                        .data('page', i);
+                    li.append(a);
+                    paginationUl.append(li);
+                }
+                $('.page-link').on('click', function (e) {
+                    e.preventDefault();
+                    var page = $(this).data('page');
+
+                });
+
+
+
+               $('.page-link').on('click', function (e) {
+                    e.preventDefault();
+                    var page = $(this).data('page');
+                    console.log("Trang được chọn:", page);
+
+                    // Gọi lại trang hoặc ajax load data
+                    window.location.href = '/User/Index/' + page;
+                });
+
+
+            });
+
+
+        
+
+
+        $('#deleteModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);  // nút bấm mở modal
+            selectedUserId = button.data('bind');   // lấy id user
+
+
+            // Nút xác nhân của Modal
+            $('#btn-confirm').on('click',function (){
+
+                console.log("Xác nhận!");
+
+                DeleteUser(selectedUserId);
+
+                setTimeout(function(){
+                      window.location.reload();
+                }, 1000);
+              
+            });
+
+         
+
+            console.log("User ID cần xóa:", selectedUserId);
+        });
+
+
+        $('.close').on('click',function(){
+             $('#deleteModal').modal('hide');
+            
+        })
+
+
+
+        function RedirecToPage(page){
+
+            
+        }
+
+
+
+        function  DeleteUser(userId){
+          $.ajax({
+            url: '@Url.Action("Delete", "User")',
+            type: 'DELETE',
+            data: { id: userId },
+            success: function (res) {
+               
+               showAlert(res, "success");
+
+                $('#deleteModal').modal('hide');
+
+            },
+            error: function () {
+
+                showAlert("Có lỗi xảy ra ! , Vui lòng thử lại!", "danger");
+
+                 $('#deleteModal').modal('hide');
+            }
+        });
+
+        }
+
+
+
+
+
+    </script>
+}
+

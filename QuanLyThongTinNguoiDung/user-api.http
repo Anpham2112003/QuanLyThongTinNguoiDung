@@ -1,0 +1,20 @@
+﻿# For more info on HTTP files go to https://aka.ms/vs/httpfile
+### 🟢 Lấy danh sách người dùng
+GET https://localhost:7058/User/Index
+Accept: application/json
+
+
+### 🟢 Tạo người dùng mới
+POST https://localhost:7058/User/Create
+Content-Type: application/json
+
+{
+  "name": "Nguyen Van A",
+  "email": "a@example.com",
+  "phone": "0123456789"
+}
+
+
+### 🔵 Xóa người dùng
+DELETE https://localhost:7058/User/Delete?id=4b7a0f6b-21c2-4e10-b6c3-00d8a0d8c9b4
+Accept: application/json
